@@ -1,10 +1,9 @@
-const postgres = require('postgres') 
+// config/db.js
+const { createClient } = require('@supabase/supabase-js');
 
-// Conexión con Transaction Pooler (recomendado)
-const sql = postgres(process.env.DATABASE_URL, {
-  ssl: { rejectUnauthorized: false }, // Necesario para Supabase
-  max: 20, // Conexiones máximas en el pool
-  idle_timeout: 30 // Segundos
-})
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 
-module.exports = sql
+module.exports = supabase; 

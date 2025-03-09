@@ -5,11 +5,12 @@ class Services {
   // Leer todas las filas
   async getAll() {
     try {
+      console.log('ENTRE A GETALL');
       const { data, error } = await supabase
         .from('servicios')
         .select('*');
 
-      if (error) throw new Error(error.message);
+      if (error) throw error;
       return data;
     } catch (error) {
       console.error('Error en getAll:', error);
@@ -20,7 +21,7 @@ class Services {
   // Leer columnas específicas
   async getColumns(columns = []) {
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('servicios')
         .select(columns.join(','));
 
@@ -56,7 +57,7 @@ class Services {
   // Paginación
   async getPaginated(start = 0, end = 9) {
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('servicios')
         .select('*')
         .range(start, end);
@@ -72,7 +73,7 @@ class Services {
   // Método personalizado para filtrar por país y servicios
   async getByCountryAndServices(country, services) {
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('servicios')
         .select('*')
         .eq('pais', country)

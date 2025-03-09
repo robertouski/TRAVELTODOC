@@ -7,12 +7,42 @@ const agents = {
         model: "gpt-4o-mini-2024-07-18",
         temperature: 0
     },
-    "Marco": {
-        instructions: `ESTE BOT AUN ESTA POR CREARCE, NO RESPONDE A PREGUNTAS POR AHORA.`,
-        files: [],
-        model: "gpt-4o-mini-2024-07-18",
-        temperature: 0.5
-    }
+    // "agent_cir_bariatrica": {
+    //     instructions: prompt_1,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.5
+    // },
+    // "agent_cir_aumento_mamario": {
+    //     instructions: prompt_2,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.5
+    // },
+    // "agent_cir_reduccion_mamario": {
+    //     instructions: prompt_3,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.5
+    // },
+    // "agent_cir_levantamiento_mamario": {
+    //     instructions: prompt_4,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.5
+    // },
+    // "agent_coordinador_agendar": {
+    //     instructions: prompt_5,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.3
+    // },
+    // "agent_coordinador_cancelar": {
+    //     instructions: prompt_6,
+    //     files: [],
+    //     model: "gpt-4o-mini-2024-07-18",
+    //     temperature: 0.3
+    // }
 };
 
 module.exports = agents;
