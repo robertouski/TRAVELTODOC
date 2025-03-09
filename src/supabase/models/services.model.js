@@ -5,7 +5,6 @@ class Services {
   // Leer todas las filas
   async getAll() {
     try {
-      console.log('ENTRE A GETALL');
       const { data, error } = await supabase
         .from('servicios')
         .select('*');
