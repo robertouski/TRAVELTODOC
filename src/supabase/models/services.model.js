@@ -70,18 +70,18 @@ class Services {
   }
 
   // Método personalizado para filtrar por país y servicios
-  async getByCountryAndServices(country, services) {
+  async getByCountryAndService(country, service) {
     try {
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from('servicios')
         .select('*')
         .eq('pais', country)
-        .in('nombre_servicio', services);
-
-      if (error) throw new Error(error.message);
+        .eq('servicio', service); // Columna correcta
+  
+      if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error en getByCountryAndServices:', error);
+      console.error('Error en getByCountryAndService:', error);
       return null;
     }
   }
