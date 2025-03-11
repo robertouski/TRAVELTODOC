@@ -1,8 +1,9 @@
 const express = require("express");
 const validator = require("validator");
+const mailValidatorService = require("../services/mail-validator.service");
 const router = express.Router();
 
-router.post("/", (req, res) => {
+router.post("/", mailValidatorService, (req, res) => {
   try {
     // 1. Verificar si existe el body y el email
     if (!req.body || !req.body.email) {
