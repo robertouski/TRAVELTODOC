@@ -40,7 +40,7 @@ class GoogleService {
     const calendar = google.calendar({ version: 'v3', auth: this.oauth2Client });
   
     const endDate = new Date(eventData.startDate);
-    endDate.setHours(endDate.getHours() + 1); // Duración por defecto 1 hora
+    endDate.setHours(endDate.getHours() + 1); 
   
     const event = await calendar.events.insert({
       calendarId: 'primary',
@@ -49,7 +49,7 @@ class GoogleService {
         description: eventData.descripcion,
         start: {
           dateTime: eventData.startDate.toISOString(),
-          timeZone: 'America/Argentina/Buenos_Aires' // Ajustar según tu zona horaria
+          timeZone: 'America/Argentina/Buenos_Aires' 
         },
         end: {
           dateTime: endDate.toISOString(),

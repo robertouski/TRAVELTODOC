@@ -14,8 +14,7 @@ const calendarController = {
         emailLead,            // Email del lead
         etapaFunnel           // Etapa actual del funnel
       } = req.body;
-      
-      const [fecha, hora] = fechaHora.split('T');
+
       const rowData = [
         nowDate, // Si no viene fecha, usamos actual
         fechaHora,               // Fecha última actualización (ahora)
