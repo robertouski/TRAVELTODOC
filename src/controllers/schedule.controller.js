@@ -1,0 +1,69 @@
+const GoogleService = require('../services/google.service');
+const googleService = new GoogleService();
+const calendarController = {
+  createEvent: async (req, res) => {
+    try {
+      const nowDate = new Date().toISOString();
+      const {
+        fecha,   
+        hora,
+        nombre,   
+        descripcion,    // Fecha de creación del lead (puede venir del front)
+        cirugiaSeleccionada,  // Valor de la cirugía seleccionada
+        fuente,               // 'Meta' o 'No Meta'
+        nombreLead,           // Nombre del lead
+        emailLead,            // Email del lead
+        etapaFunnel           // Etapa actual del funnel
+      } = req.body;
+
+      const rowData = [
+        nowDate, // Si no viene fecha, usamos actual
+        fecha,               // Fecha última actualización (ahora)
+        cirugiaSeleccionada || '',              // Cirugía puede ser opcional
+        fuente || 'No Meta',                   // Default a 'No Meta'
+        nombreLead,
+        emailLead,
+        etapaFunnel
+      ];
+      // Validación
+      if (!fecha || !hora || !nombre) {
+        return res.status(400).json({ error: "Datos incompletos" });
+      }
+
+      // Crear evento en Calendar
+      const event = await googleService.createCalendarEvent({
+        fecha,
+        hora,
+        nombre,
+        descripcion: descripcion || ''
+      });
+      console.log('Evento creado:', event);
+      
+      // Registrar en Sheets
+      const sheetResponse = await googleService.appendToSheet(
+        process.env.GOOGLE_SHEET_ID,
+        rowData
+      );
+      console.log('Evento registrado en Sheets',sheetResponse );
+      res.json({
+        success: true,
+        event: {
+          id: event.id,
+          link: event.htmlLink,
+          fecha,
+          hora,
+          nombre
+        }
+      });
+
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+};
+
+module.exports = calendarController;
