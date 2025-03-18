@@ -5,9 +5,8 @@ const calendarController = {
     try {
       const nowDate = new Date().toISOString();
       const {
-        fecha,   
-        hora,
-        nombre,   
+        fechaHora,   
+        titulo,   
         descripcion,    // Fecha de creación del lead (puede venir del front)
         cirugiaSeleccionada,  // Valor de la cirugía seleccionada
         fuente,               // 'Meta' o 'No Meta'
@@ -15,10 +14,11 @@ const calendarController = {
         emailLead,            // Email del lead
         etapaFunnel           // Etapa actual del funnel
       } = req.body;
-
+      
+      const [fecha, hora] = fechaHora.split('T');
       const rowData = [
         nowDate, // Si no viene fecha, usamos actual
-        fecha,               // Fecha última actualización (ahora)
+        fechaHora,               // Fecha última actualización (ahora)
         cirugiaSeleccionada || '',              // Cirugía puede ser opcional
         fuente || 'No Meta',                   // Default a 'No Meta'
         nombreLead,
@@ -26,15 +26,18 @@ const calendarController = {
         etapaFunnel
       ];
       // Validación
-      if (!fecha || !hora || !nombre) {
+      if (!fechaHora || !titulo || !nombreLead || !emailLead) {
         return res.status(400).json({ error: "Datos incompletos" });
+      }
+      const startDate = new Date(fechaHora);
+      if (isNaN(startDate)) {
+        return res.status(400).json({ error: "Formato de fecha inválido" });
       }
 
       // Crear evento en Calendar
       const event = await googleService.createCalendarEvent({
-        fecha,
-        hora,
-        nombre,
+        startDate,
+        titulo,
         descripcion: descripcion || ''
       });
       console.log('Evento creado:', event);
@@ -50,9 +53,8 @@ const calendarController = {
         event: {
           id: event.id,
           link: event.htmlLink,
-          fecha,
-          hora,
-          nombre
+          fechaHora,
+          titulo
         }
       });
 

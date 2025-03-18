@@ -38,20 +38,26 @@ class GoogleService {
   async createCalendarEvent(eventData) {
     await this.ensureAuth();
     const calendar = google.calendar({ version: 'v3', auth: this.oauth2Client });
-    
-    const startDate = new Date(`${eventData.fecha}T${eventData.hora}`);
-    const endDate = new Date(startDate.getTime() + (eventData.duracion || 60) * 60 * 1000);
-
+  
+    const endDate = new Date(eventData.startDate);
+    endDate.setHours(endDate.getHours() + 1); // Duración por defecto 1 hora
+  
     const event = await calendar.events.insert({
       calendarId: 'primary',
       requestBody: {
-        summary: eventData.nombre,
+        summary: eventData.titulo,
         description: eventData.descripcion,
-        start: { dateTime: startDate.toISOString(), timeZone: 'UTC' },
-        end: { dateTime: endDate.toISOString(), timeZone: 'UTC' }
+        start: {
+          dateTime: eventData.startDate.toISOString(),
+          timeZone: 'America/Argentina/Buenos_Aires' // Ajustar según tu zona horaria
+        },
+        end: {
+          dateTime: endDate.toISOString(),
+          timeZone: 'America/Argentina/Buenos_Aires'
+        }
       }
     });
-
+  
     return event.data;
   }
 
