@@ -32,6 +32,7 @@ class EmployeesAddon extends EventEmitter {
     let tempFiles = [];
     try {
       const config = agentConfig[assistantName];
+      console.log(config);
       if (!config)
         throw new Error(`Configuración no encontrada para ${assistantName}`);
 

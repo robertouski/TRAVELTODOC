@@ -22,7 +22,7 @@ const prompt_16 = require("../prompts/prompt_agent_16");
 // 2. FUNCIÓN FACTORÍA PARA CREAR CONFIGURACIONES
 const createAgentConfig = (country, service, prompt) => ({
   instructions: prompt,
-  country: country.toLowerCase(),
+  country: country,
   servicio: service,
   pdfType: ["propuesta", "presupuesto"], 
   model: "gpt-4o-mini-2024-07-18",
@@ -42,26 +42,26 @@ module.exports = agents = {
   },
 
   // EJEMPLOS URUGUAY (como ya lo tenías)
-  agent_uruguay_bariatrica:          createAgentConfig("uruguay", "cirugia bariatrica",     prompt_1),
-  agent_uruguay_aumento_mamario:     createAgentConfig("uruguay", "aumento mamario",        prompt_2),
-  agent_uruguay_levantamiento_mamario: createAgentConfig("uruguay", "levantamiento mamario",  prompt_3),
-  agent_uruguay_reduccion_mamaria:   createAgentConfig("uruguay", "reduccion mamaria",      prompt_4),
+  agent_uruguay_bariatrica:createAgentConfig("Uruguay", "Cirugía Bariátrica",     prompt_1),
+  agent_uruguay_aumento_mamario:createAgentConfig("Uruguay", "Aumento Mamario",        prompt_2),
+  agent_uruguay_levantamiento_mamario: createAgentConfig("Uruguay", "Levantamiento Mamario",  prompt_3),
+  agent_uruguay_reduccion_mamaria:   createAgentConfig("Uruguay", "Reducción Mamaria",      prompt_4),
 
   // NUEVOS EJEMPLOS PARA CHILE
-  agent_chile_bariatrica:            createAgentConfig("chile",   "cirugia bariatrica",     prompt_5),
-  agent_chile_aumento_mamario:       createAgentConfig("chile",   "aumento mamario",        prompt_6),
-  agent_chile_levantamiento_mamario: createAgentConfig("chile",   "levantamiento mamario",  prompt_7),
-  agent_chile_reduccion_mamaria:     createAgentConfig("chile",   "reduccion mamaria",      prompt_8),
+  agent_chile_bariatrica:            createAgentConfig("Chile",   "Cirugía Bariátrica",     prompt_5),
+  agent_chile_aumento_mamario:       createAgentConfig("Chile",   "Cumento Mamario",        prompt_6),
+  agent_chile_levantamiento_mamario: createAgentConfig("Chile",   "Cevantamiento Mamario",  prompt_7),
+  agent_chile_reduccion_mamaria:     createAgentConfig("Chile",   "Ceducción Mamaria",      prompt_8),
 
   // NUEVOS EJEMPLOS PARA BOLIVIA
-  agent_bolivia_bariatrica:            createAgentConfig("bolivia",   "cirugia bariatrica",     prompt_9),
-  agent_bolivia_aumento_mamario:       createAgentConfig("bolivia",   "aumento mamario",        prompt_10),
-  agent_bolivia_levantamiento_mamario: createAgentConfig("bolivia",   "levantamiento mamario",  prompt_11),
-  agent_bolivia_reduccion_mamaria:     createAgentConfig("bolivia",   "reduccion mamaria",      prompt_12),
+  agent_bolivia_bariatrica:            createAgentConfig("Bolivia",   "Cirugía Bariátrica",     prompt_9),
+  agent_bolivia_aumento_mamario:       createAgentConfig("Bolivia",   "Aumento Mamario",        prompt_10),
+  agent_bolivia_levantamiento_mamario: createAgentConfig("Bolivia",   "Levantamiento Mamario",  prompt_11),
+  agent_bolivia_reduccion_mamaria:     createAgentConfig("Bolivia",   "Reducción Mamaria",      prompt_12),
 
   // NUEVOS EJEMPLOS PARA PARAGUAY
-  agent_paraguay_bariatrica:            createAgentConfig("paraguay",   "cirugia bariatrica",     prompt_13),
-  agent_paraguay_aumento_mamario:       createAgentConfig("paraguay",   "aumento mamario",        prompt_14),
-  agent_paraguay_levantamiento_mamario: createAgentConfig("paraguay",   "levantamiento mamario",  prompt_15),
-  agent_paraguay_reduccion_mamaria:     createAgentConfig("paraguay",   "reduccion mamaria",      prompt_16),
+  agent_paraguay_bariatrica:            createAgentConfig("Paraguay",   "Cirugía Bariátrica",     prompt_13),
+  agent_paraguay_aumento_mamario:       createAgentConfig("Paraguay",   "Aumento Mamario",        prompt_14),
+  agent_paraguay_levantamiento_mamario: createAgentConfig("Paraguay",   "Levantamiento Mamario",  prompt_15),
+  agent_paraguay_reduccion_mamaria:     createAgentConfig("Paraguay",   "Reducción Mamaria",      prompt_16),
 };
