@@ -77,6 +77,7 @@ class Services {
         .select('*')
         .eq('pais', country)
         .eq('servicio', service); // Columna correcta
+        
         return data
     } catch (error) {
       console.error('Error en getByCountryAndService:', error);
