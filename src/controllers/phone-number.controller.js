@@ -2,7 +2,6 @@ const  PhoneNumberService  = require('../services/phone-number.service');
 
 const getPhoneNumberCountry = async (req, res) => {
   try {
-    console.log(req.body);
     const { phoneNumber } = req.body;
     
     if (!phoneNumber?.trim()) {

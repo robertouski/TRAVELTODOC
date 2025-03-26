@@ -9,7 +9,6 @@ exports.findOrCreateAssistant = async (req, res) => {
     const ai = new AiService(apikey);
     const assistantName = req.body.assistantName; 
     const assistantId = await ai.findOrCreateAssistant(assistantName);
-    console.log("assistantId:", assistantId);
     res.status(200).json({ assistantId });
   } catch (error) {
     console.error("An error occurred:", error);
@@ -23,7 +22,6 @@ exports.getAssistantInfo = async (req, res) => {
     const assistantId = req.params.assistantId;
     const ai = new AiService(apikey);
     const assistantInfo = await ai.getAssistantInfo(assistantId);
-    console.log("assistantInfo:", assistantInfo);
     res.status(200).json(assistantInfo);
   } catch (error) {
     console.error("An error occurred:", error);

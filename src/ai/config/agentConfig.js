@@ -1,6 +1,3 @@
-// agentConfig.js
-
-// 1. IMPORTA TUS PROMPTS
 const prompt_0 = require("../prompts/prompt_agent_0");
 const prompt_1 = require("../prompts/prompt_agent_1");
 const prompt_2 = require("../prompts/prompt_agent_2");
@@ -53,7 +50,6 @@ module.exports = agents = {
   agent_chile_levantamiento_mamario: createAgentConfig("Chile",   "Cevantamiento Mamario",  prompt_7),
   agent_chile_reduccion_mamaria:     createAgentConfig("Chile",   "Ceducción Mamaria",      prompt_8),
 
-  // NUEVOS EJEMPLOS PARA BOLIVIA
   agent_bolivia_bariatrica:            createAgentConfig("Bolivia",   "Cirugía Bariátrica",     prompt_9),
   agent_bolivia_aumento_mamario:       createAgentConfig("Bolivia",   "Aumento Mamario",        prompt_10),
   agent_bolivia_levantamiento_mamario: createAgentConfig("Bolivia",   "Levantamiento Mamario",  prompt_11),
