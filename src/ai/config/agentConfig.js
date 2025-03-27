@@ -67,17 +67,17 @@ module.exports = agents = {
   ),
   agent_chile_aumento_mamario: createAgentConfig(
     "Chile",
-    "Cumento Mamario",
+    "Aumento Mamario",
     prompt_6
   ),
   agent_chile_levantamiento_mamario: createAgentConfig(
     "Chile",
-    "Cevantamiento Mamario",
+    "Levantamiento Mamario",
     prompt_7
   ),
   agent_chile_reduccion_mamaria: createAgentConfig(
     "Chile",
-    "Ceducción Mamaria",
+    "Aumento Mamario",
     prompt_8
   ),
 
