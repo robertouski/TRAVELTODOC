@@ -3,10 +3,8 @@ const services = new Services();
 const axios = require("axios");
 const tmp = require("tmp");
 const fs = require("fs");
-const fsp = fs.promises;
 const EventEmitter = require("events");
 const { OpenAI, toFile } = require("openai");
-const path = require("path");
 const agentConfig = require("./config/agentConfig");
 
 const IMessages = [];
@@ -100,9 +98,6 @@ class EmployeesAddon extends EventEmitter {
             writer.on("finish", resolve);
             writer.on("error", reject);
           });
-          // En vez de leer el Buffer directamente:
-          // const fileBuffer = await fsp.readFile(tempPath);
-          // Usa readStream y luego conviértelo con toFile
 
           const readStream = fs.createReadStream(tempPath);
           const fileForOpenAI = await toFile(readStream);
