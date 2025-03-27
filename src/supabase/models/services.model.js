@@ -84,6 +84,20 @@ class Services {
       return null;
     }
   }
+    // Método personalizado para filtrar anuncios por id para obtener servicio y pais
+  async getAnnouncementById(id) {
+    try {
+      const { data } = await supabase
+        .from('anuncios')
+        .select('*')
+        .eq('id_meta', id)
+        return data
+        
+    } catch (error) {
+      console.error('Error en getAnnouncementById:', error);
+      return null;
+    }
+  }
 }
 
 module.exports = Services;

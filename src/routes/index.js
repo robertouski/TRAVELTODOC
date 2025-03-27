@@ -8,7 +8,8 @@ const clientRoutes = require('./clients.routes');
 const servicesRoutes = require('./services.routes');
 const mailRoutes = require('./mail.routes');
 const scheduleRoutes = require('./schedule.routes');
-const auth  = require('./auth.routes');
+const auth = require('./auth.routes');
+const announcementRoutes = require('./announcement.routes');
 
 
 router.use('/assistant', assistantRoutes);
@@ -16,6 +17,7 @@ router.use('/phone', phoneNumberRoutes);
 router.use('/clients', clientRoutes);
 router.use('/services', servicesRoutes);
 router.use('/mail', mailRoutes);
+router.use('/announcement', announcementRoutes);
 router.use('/event-schedule', scheduleRoutes);
 router.use('/auth', auth);
 

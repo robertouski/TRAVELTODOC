@@ -1,9 +1,9 @@
 const GoogleService = require('../services/google.service');
 const googleService = new GoogleService();
 
-const getAuthUrl = (req, res) => {
+const getAuthUrl = async (req, res) => {
   try {
-    const authUrl = googleService.getAuthUrl();
+    const authUrl = await googleService.getAuthUrl();
     console.log('Autoriza aquí:', authUrl);
     res.redirect(authUrl);
   } catch (error) {

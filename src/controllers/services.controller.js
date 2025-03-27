@@ -56,4 +56,4 @@ class ServicesController {
   }
 }
 
-module.exports = new ServicesController();
+module.exports= new ServicesController();
