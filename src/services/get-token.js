@@ -1,5 +1,4 @@
-http://localhost:3000/auth/callback?code=4/0AQSTgQG59wKm-oDhvUzLhh7IELJK6BG21qjbcgB9qY3uscxV9nd5L_DD5_mi5TGmOLkx0w&scope=https://www.googleapis.com/auth/spreadsheets%20https://www.googleapis.com/auth/calendar.events
-// get-tokens.js
+http://localhost:3000/auth/callback?code=4/0AQSTgQGAC-tPBbvlvlrCTqDlnnr5Efm5maY-QjRivWPju30qhh2jnRRQcK_8lIm_yAyurw&scope=https://www.googleapis.com/auth/spreadsheets%20https://www.googleapis.com/auth/calendar.events// get-tokens.js
 require('dotenv').config();
 const { OAuth2Client } = require('google-auth-library');
 
@@ -10,7 +9,7 @@ const oauth2Client = new OAuth2Client(
 );
 
 // Usa el código recibido en la URL
-const code = '4/0AQSTgQG59wKm-oDhvUzLhh7IELJK6BG21qjbcgB9qY3uscxV9nd5L_DD5_mi5TGmOLkx0w';
+const code = 'code=4/0AQSTgQFw1iWacFFW2vap56_5je0kCMYyn5HcEpe124ohUw4IxaMJxE_njcQkcQTKItuvEg';
 
 async function getTokens() {
   try {

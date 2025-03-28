@@ -12,16 +12,18 @@ const calendarController = {
         fuente,               // 'Meta' o 'No Meta'
         nombreLead,           // Nombre del lead
         emailLead,            // Email del lead
-        etapaFunnel           // Etapa actual del funnel
+        telefonoLead,         // Teléfono del lead
+        etapaFunnel           
       } = req.body;
 
       const rowData = [
         nowDate, // Si no viene fecha, usamos actual
-        fechaHora,               // Fecha última actualización (ahora)
+        fechaHora,               // Fecha de agendar
         cirugiaSeleccionada || '',              // Cirugía puede ser opcional
         fuente || 'No Meta',                   // Default a 'No Meta'
         nombreLead,
         emailLead,
+        telefonoLead,         // Teléfono del lead
         etapaFunnel
       ];
       // Validación

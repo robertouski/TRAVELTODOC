@@ -11,7 +11,8 @@ const oauth2Client = new OAuth2Client(
 // Generar URL de autenticación
 const authUrl = oauth2Client.generateAuthUrl({
   access_type: 'offline',
-  scope: ['https://www.googleapis.com/auth/calendar.events'],
+  scope: ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/spreadsheets'],
+  prompt: 'consent',
   redirect_uri: process.env.GOOGLE_REDIRECT_URI
 });
 
