@@ -9,7 +9,7 @@ const oauth2Client = new OAuth2Client(
 );
 
 // Usa el código recibido en la URL
-const code = 'code=4/0AQSTgQFw1iWacFFW2vap56_5je0kCMYyn5HcEpe124ohUw4IxaMJxE_njcQkcQTKItuvEg';
+const code = 'code=4/0AQSTgQFTBJ-8kz-IMTMl7pFrUVUNJq-4PuzzzDt913LOhGMUAGV7az51LiUCfcGVc9oLPg';
 
 async function getTokens() {
   try {

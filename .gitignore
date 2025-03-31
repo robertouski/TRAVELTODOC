@@ -6,3 +6,4 @@ tmp/
 dist/
 build/
 *.log
+src/services/get-token.js 

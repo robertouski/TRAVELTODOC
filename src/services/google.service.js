@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { google } = require('googleapis');
 const { OAuth2Client } = require('google-auth-library');
 
@@ -65,13 +66,68 @@ class GoogleService {
   async appendToSheet(spreadsheetId, data) {
     await this.ensureAuth();
     const sheets = google.sheets({ version: 'v4', auth: this.oauth2Client });
-    
+    console.log('Appending to sheet:', spreadsheetId, data);
     return sheets.spreadsheets.values.append({
       spreadsheetId,
       range: 'A1',
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [data] }
     });
+  }
+  async upsertByPhone(spreadsheetId, data) {
+    await this.ensureAuth();
+    const sheets = google.sheets({ version: 'v4', auth: this.oauth2Client });
+  
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'A:Z',
+    });
+  
+    const rows = response.data.values || [];
+    console.log('Rows:', rows);
+  
+    const headers = rows[0].map((header) => header.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '').toLowerCase());
+    console.log('Headers:', headers);
+    const phoneColumnIndex = headers.indexOf('telefono');
+    console.log('Phone Column Index:', phoneColumnIndex);
+  
+    if (phoneColumnIndex === -1) {
+      throw new Error('Columna "Telefono" no encontrada en el sheet');
+    }
+  
+    const targetPhone = data.telefonoLead.toString().replace(/[^\d]/g, '');
+    console.log('Target Phone:', targetPhone);
+  
+    const rowIndex = rows.findIndex((row, index) => index > 0 && row[phoneColumnIndex].toString().replace(/[^0-9+]/g, '') === targetPhone.replace(/[^0-9+]/g, ''));
+    console.log("rowIndex", rowIndex)
+    const rowData = [
+      new Date().toISOString(),
+      data.fechaHora,
+      data.cirugiaSeleccionada || '',
+      data.fuente || 'No Meta',
+      data.nombreLead,
+      data.emailLead,
+      targetPhone,
+      data.etapaFunnel
+    ];
+  
+    if (rowIndex !== -1) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: `A${rowIndex + 1}:H${rowIndex + 1}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [rowData] }
+      });
+      return { operation: 'update', row: rowIndex + 1 };
+    } else {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: 'A1',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [rowData] }
+      });
+      return { operation: 'insert' };
+    }
   }
 }
 

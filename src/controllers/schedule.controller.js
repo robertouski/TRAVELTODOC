@@ -1,3 +1,4 @@
+require('dotenv').config();
 const GoogleService = require('../services/google.service');
 const googleService = new GoogleService();
 const calendarController = {

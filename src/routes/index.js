@@ -10,6 +10,7 @@ const mailRoutes = require('./mail.routes');
 const scheduleRoutes = require('./schedule.routes');
 const auth = require('./auth.routes');
 const announcementRoutes = require('./announcement.routes');
+const googleSheets = require('./googleSheet.routes');
 
 
 router.use('/assistant', assistantRoutes);
@@ -20,5 +21,6 @@ router.use('/mail', mailRoutes);
 router.use('/announcement', announcementRoutes);
 router.use('/event-schedule', scheduleRoutes);
 router.use('/auth', auth);
+router.use('/spreadsheet', googleSheets);
 
 module.exports = router;
