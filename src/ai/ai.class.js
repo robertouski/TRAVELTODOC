@@ -29,14 +29,17 @@ class EmployeesAddon extends EventEmitter {
   async findOrCreateAssistant(assistantName) {
     let tempFiles = [];
     try {
+      console.log('🔍 Buscando asistente:', assistantName);
       const config = agentConfig[assistantName];
       if (!config)
         throw new Error(`Configuración no encontrada para ${assistantName}`);
 
       const assistants = await this.openai.beta.assistants.list();
-      const existingAssistant = assistants.data.find(
+      console.log('assistants', assistants);
+      const existingAssistant = await assistants.data.find(
         (a) => a.name === assistantName
       );
+      console.log('existingAssistant', existingAssistant);
       if (existingAssistant) {
         console.log(
           `✅ Asistente existente encontrado: ${assistantName} (ID: ${existingAssistant.id})`
