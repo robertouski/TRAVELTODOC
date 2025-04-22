@@ -26,6 +26,19 @@ class EmployeesAddon extends EventEmitter {
       });
     });
 
+    async retry(fn, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          return await fn();
+        } catch (err) {
+          console.warn(`⚠️ Reintento ${i + 1} tras error:`, err.message);
+          if (i === retries - 1) throw err;
+          await new Promise(res => setTimeout(res, delay));
+        }
+      }
+    }
+    
+
   /**
    * Método: findAssistant()
    * Búsqueda de asistente según el nombre recibido.
@@ -65,14 +78,12 @@ class EmployeesAddon extends EventEmitter {
    *  - Asocia el vector store al asistente mediante la herramienta "file_search".
    */
   async createAssistant() {
-    // Recorremos cada clave (agent) definida en el archivo de configuración
     const agentNames = Object.keys(agentConfig);
     for (const assistantName of agentNames) {
-      let tempFiles = []; // Para guardar los archivos temporales y limpiarlos al final
+      let tempFiles = [];
       const config = agentConfig[assistantName];
       console.log(`\n🛠️  Creando nuevo asistente: ${assistantName}`);
       try {
-        // Crear el asistente
         const newAssistant = await this.openai.beta.assistants.create({
           instructions: config.instructions,
           name: assistantName,
@@ -81,107 +92,79 @@ class EmployeesAddon extends EventEmitter {
           temperature: config.temperature,
         });
         console.log(`🎉 Asistente creado: ${newAssistant.id}`);
-
-        // Crear la base de datos vectorial asociada
-        console.log(`📦 Creando vector store para ${assistantName}...`);
+  
         const vectorStore = await this.openai.beta.vectorStores.create({
           name: `${assistantName} Document Store`,
         });
         console.log(`🆔 Vector Store ID: ${vectorStore.id}`);
-
-        // Se determina la(s) tipología(s) de PDF, ya que puede venir como string o arreglo.
+  
         const pdfTypes = Array.isArray(config.pdfType)
           ? config.pdfType
           : [config.pdfType];
-        console.log(
-          `🔍 Buscando ${pdfTypes.length} PDF(s) para ${assistantName}...`
+        console.log(`🔍 Buscando ${pdfTypes.length} PDF(s) para ${assistantName}...`);
+  
+        const fileIds = [];
+  
+        for (const type of pdfTypes) {
+          const servicios = await services.getByCountryAndService(config.country, config.servicio);
+          if (!servicios?.length) throw new Error("Servicio no encontrado");
+  
+          const pdfKey = `${type}_pdf`;
+          const pdfUrl = servicios[0][pdfKey];
+          if (!pdfUrl) throw new Error(`URL no encontrada para ${type}`);
+          console.log(`📄 URL obtenida (${type}): ${pdfUrl}`);
+  
+          const { path: tempPath, cleanup } = await this.tempFile();
+          tempFiles.push({ path: tempPath, cleanup });
+  
+          const response = await retry(() => axios({
+            method: "get",
+            url: pdfUrl,
+            responseType: "stream",
+            timeout: 10000,
+          }));
+  
+          const writer = fs.createWriteStream(tempPath);
+          response.data.pipe(writer);
+          await new Promise((resolve, reject) => {
+            writer.on("finish", resolve);
+            writer.on("error", reject);
+          });
+  
+          const readStream = fs.createReadStream(tempPath);
+          const fileForOpenAI = await toFile(readStream);
+  
+          const fileData = await retry(() => this.openai.files.create({
+            file: fileForOpenAI,
+            purpose: "assistants",
+          }));
+  
+          console.log(`📤 Archivo subido (${type}): ${fileData.id}`);
+          fileIds.push(fileData.id);
+        }
+  
+        console.log(`🔗 Vinculando ${fileIds.length} archivos al Vector Store...`);
+        const batch = await this.openai.beta.vectorStores.fileBatches.createAndPoll(
+          vectorStore.id,
+          { file_ids: fileIds }
         );
-
-        // Recolectar los file IDs tras la subida de cada PDF
-        const fileIds = await Promise.all(
-          pdfTypes.map(async (type) => {
-            // Obtener el servicio de acuerdo al país y servicio definidos en la configuración.
-            const servicios = await services.getByCountryAndService(
-              config.country,
-              config.servicio
-            );
-            if (!servicios?.length)
-              throw new Error("Servicio no encontrado");
-            const pdfKey = `${type}_pdf`;
-            const pdfUrl = servicios[0][pdfKey];
-            if (!pdfUrl) throw new Error(`URL no encontrada para ${type}`);
-            console.log(`📄 URL obtenida (${type}): ${pdfUrl}`);
-
-            // Preparar archivo temporal
-            const { path: tempPath, cleanup } = await this.tempFile();
-            tempFiles.push({ path: tempPath, cleanup });
-
-            // Descargar el archivo PDF vía stream
-            const response = await axios({
-              method: "get",
-              url: pdfUrl,
-              responseType: "stream",
-            });
-            const writer = fs.createWriteStream(tempPath);
-            response.data.pipe(writer);
-            await new Promise((resolve, reject) => {
-              writer.on("finish", resolve);
-              writer.on("error", reject);
-            });
-
-            // Convertir el archivo descargado al formato que acepta OpenAI
-            const readStream = fs.createReadStream(tempPath);
-            const fileForOpenAI = await toFile(readStream);
-
-            // Subir el archivo a OpenAI
-            const fileData = await this.openai.files.create({
-              file: fileForOpenAI,
-              purpose: "assistants",
-              metadata: {
-                // Puede agregarse metadata adicional si es necesario
-              },
-            });
-            console.log(`📤 Archivo subido (${type}): ${fileData.id}`);
-            return fileData.id;
-          })
-        );
-
-        // Vincular los archivos subidos al vector store
-        console.log(
-          `🔗 Vinculando ${fileIds.length} archivos al Vector Store...`
-        );
-        const batch =
-          await this.openai.beta.vectorStores.fileBatches.createAndPoll(
-            vectorStore.id,
-            { file_ids: fileIds }
-          );
         console.log(`📦 Estado del batch: ${batch.status}`);
         console.log(`📊 Estadísticas:
           - Archivos exitosos: ${batch.file_counts.succeeded}
           - Archivos fallidos: ${batch.file_counts.failed}
         `);
-
-        // Asociar el vector store al asistente mediante la actualización de la herramienta "file_search"
-        console.log("🤝 Asociando Vector Store al asistente...");
-        const updatedAssistant =
-          await this.openai.beta.assistants.update(newAssistant.id, {
-            tool_resources: {
-              file_search: { vector_store_ids: [vectorStore.id] },
-            },
-          });
-        console.log(
-          `✅ Asistente ${assistantName} completado. ID: ${newAssistant.id}`
-        );
+  
+        await this.openai.beta.assistants.update(newAssistant.id, {
+          tool_resources: {
+            file_search: { vector_store_ids: [vectorStore.id] },
+          },
+        });
+  
+        console.log(`✅ Asistente ${assistantName} completado. ID: ${newAssistant.id}`);
       } catch (error) {
-        console.error(
-          `❌ Error al crear el asistente ${assistantName}:`,
-          error
-        );
+        console.error(`❌ Error al crear el asistente ${assistantName}:`, error);
       } finally {
-        // Limpiar todos los archivos temporales creados para este agente.
-        console.log(
-          `🧹 Limpiando ${tempFiles.length} archivos temporales para ${assistantName}...`
-        );
+        console.log(`🧹 Limpiando ${tempFiles.length} archivos temporales para ${assistantName}...`);
         tempFiles.forEach(({ cleanup }) => {
           try {
             cleanup();
