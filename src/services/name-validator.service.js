@@ -7,11 +7,14 @@ exports.isValidateName = (req, res) => {
 
   const parts = name.split(/\s+/);
 
-  // Al menos una palabra válida
-  const isValid = parts.every(part => /^[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}$/.test(part));
+  // Al menos UNA palabra debe tener 3 letras o más
+  const hasValidMainName = parts.some(part => /^[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}$/.test(part));
 
-  if (!isValid) {
-    return res.status(404).json({ message: 'El nombre debe tener solo letras y al menos 3 caracteres por palabra.' });
+  // Todas las partes deben ser letras y no tener símbolos o números
+  const allWordsAreLetters = parts.every(part => /^[A-Za-zÁÉÍÓÚÑáéíóúñ]{2,}$/.test(part));
+
+  if (!hasValidMainName || !allWordsAreLetters) {
+    return res.status(404).json({ message: 'El nombre debe tener al menos una palabra principal válida (mínimo 3 letras), sin símbolos o números.' });
   }
 
   return res.status(200).json({ message: 'Nombre válido', fullName: name });
