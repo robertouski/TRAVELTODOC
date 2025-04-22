@@ -26,18 +26,6 @@ class EmployeesAddon extends EventEmitter {
       });
     });
 
-    async retry(fn, retries = 3, delay = 1000) {
-      for (let i = 0; i < retries; i++) {
-        try {
-          return await fn();
-        } catch (err) {
-          console.warn(`⚠️ Reintento ${i + 1} tras error:`, err.message);
-          if (i === retries - 1) throw err;
-          await new Promise(res => setTimeout(res, delay));
-        }
-      }
-    }
-    
 
   /**
    * Método: findAssistant()
@@ -78,6 +66,17 @@ class EmployeesAddon extends EventEmitter {
    *  - Asocia el vector store al asistente mediante la herramienta "file_search".
    */
   async createAssistant() {
+    async function retry(fn, retries = 3, delay = 1000) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          return await fn();
+        } catch (err) {
+          console.warn(`⚠️ Reintento ${i + 1} tras error:`, err.message);
+          if (i === retries - 1) throw err;
+          await new Promise(res => setTimeout(res, delay));
+        }
+      }
+    }
     const agentNames = Object.keys(agentConfig);
     for (const assistantName of agentNames) {
       let tempFiles = [];
