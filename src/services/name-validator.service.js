@@ -7,14 +7,11 @@ exports.isValidateName = (req, res) => {
 
   const parts = name.split(/\s+/);
 
-  if (parts.length < 2) {
-    return res.status(404).json({ message: 'Se requiere al menos nombre y apellido.' });
-  }
-
+  // Al menos una palabra válida
   const isValid = parts.every(part => /^[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}$/.test(part));
 
   if (!isValid) {
-    return res.status(404).json({ message: 'Cada parte del nombre debe tener al menos 3 letras y no contener símbolos o números.' });
+    return res.status(404).json({ message: 'El nombre debe tener solo letras y al menos 3 caracteres por palabra.' });
   }
 
   return res.status(200).json({ message: 'Nombre válido', fullName: name });
