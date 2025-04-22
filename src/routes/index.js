@@ -11,6 +11,7 @@ const scheduleRoutes = require('./schedule.routes');
 const auth = require('./auth.routes');
 const announcementRoutes = require('./announcement.routes');
 const googleSheets = require('./googleSheet.routes');
+const {isValidateName}  = require('../services/name-validator.service');
 
 
 router.use('/assistant', assistantRoutes);
@@ -22,5 +23,6 @@ router.use('/announcement', announcementRoutes);
 router.use('/event-schedule', scheduleRoutes);
 router.use('/auth', auth);
 router.use('/spreadsheet', googleSheets);
+router.use('/validatorName', isValidateName);
 
 module.exports = router;
